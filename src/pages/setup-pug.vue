@@ -2,6 +2,7 @@
 import SetupTodoFormByPug from '~/components/SetupTodoFormByPug.vue';
 import SetupTodoItemByPug from '~/components/SetupTodoItemByPug.vue';
 
+import { reactive } from 'vue';
 import { Todo } from '~/types/Todo';
 
 type State = {

@@ -14,7 +14,6 @@
     "@vue/test-utils": "^2.0.0-rc.17",
     "@vue/vue3-jest": "^27.0.0-alpha.4",
     "gulp": "^4.0.2",
-    "gulp-filter": "^7.0.0",
     "gulp-modify-file": "^1.0.1",
     "gulp-rename": "^2.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",

@@ -1,9 +1,9 @@
 import pathUtil from 'path';
 import gulp from 'gulp';
-import filter from 'gulp-filter';
 import modifyFile from 'gulp-modify-file';
 import rename from 'gulp-rename';
 import ts from 'gulp-typescript';
+
 const tsProject = ts.createProject('tsconfig.json', {
   declaration: true,
   noEmit: false,
@@ -14,10 +14,9 @@ const ROOT_DIR = process.cwd() + '/src';
 gulp.task('types', () => {
   /** 型ファイル出力対象のファイルパス一覧 */
   const targetFilePaths = [];
-  const fileTypeMap: Record<string, 'ts' | 'setup-ts'> = {};
   return (
     gulp
-      .src(['./src/components/*.vue'], {
+      .src(['./src/components/*.vue', './src/pages/*.vue'], {
         base: ROOT_DIR,
       })
       // scriptブロックだけ抽出する
@@ -32,7 +31,6 @@ gulp.task('types', () => {
               /<script lang="ts">\n((.|\n)+)<\/script>/
             );
             if (match) {
-              fileTypeMap[targetFilePath] = 'ts';
               const srcTs = match[1];
               // importパスの.vueを取り除いてTSとしてimportされるようにする
               const replacedSrc = srcTs.replace(/\.vue'/g, `'`);
@@ -46,7 +44,6 @@ gulp.task('types', () => {
               /<script setup lang="ts">\n((.|\n)+)<\/script>/
             );
             if (match) {
-              fileTypeMap[targetFilePath] = 'setup-ts';
               const srcTs = match[1];
               // importパスの.vueを取り除いてTSとしてimportされるようにする
               const replacedSrc = srcTs.replace(/\.vue'/g, `'`);
@@ -68,15 +65,6 @@ gulp.task('types', () => {
           }
 
           return content;
-        })
-      )
-      // 変換できなかったものは取り除く
-      .pipe(
-        filter((file) => {
-          const relativePath =
-            '~/' + pathUtil.relative(ROOT_DIR, file.path.replace('.vue', ''));
-          console.log(relativePath, fileTypeMap[relativePath]);
-          return !!fileTypeMap[relativePath];
         })
       )
       // 拡張子を.vue → .tsに変える
