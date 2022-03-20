@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { reactive, computed } from 'vue';
 import { Todo } from '~/types/Todo';
 
 const emit = defineEmits({

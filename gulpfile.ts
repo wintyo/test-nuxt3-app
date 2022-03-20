@@ -6,6 +6,7 @@ import rename from 'gulp-rename';
 import ts from 'gulp-typescript';
 const tsProject = ts.createProject('tsconfig.json', {
   declaration: true,
+  noEmit: false,
 });
 
 const ROOT_DIR = process.cwd() + '/src';
@@ -25,17 +26,48 @@ gulp.task('types', () => {
           const targetFilePath =
             '~/' + pathUtil.relative(ROOT_DIR, path.replace('.vue', ''));
 
-          const match = content.match(
-            /<script lang="ts">\n((.|\n)+)<\/script>/
-          );
-          if (match == null) {
-            return content;
+          {
+            // tsブロックの場合
+            const match = content.match(
+              /<script lang="ts">\n((.|\n)+)<\/script>/
+            );
+            if (match) {
+              fileTypeMap[targetFilePath] = 'ts';
+              const srcTs = match[1];
+              // importパスの.vueを取り除いてTSとしてimportされるようにする
+              const replacedSrc = srcTs.replace(/\.vue'/g, `'`);
+              return replacedSrc;
+            }
           }
-          fileTypeMap[targetFilePath] = 'ts';
-          const srcTs = match[1];
-          // importパスの.vueを取り除いてTSとしてimportされるようにする
-          const replacedSrc = srcTs.replace(/\.vue'/g, `'`);
-          return replacedSrc;
+
+          {
+            // setup tsブロックの場合
+            const match = content.match(
+              /<script setup lang="ts">\n((.|\n)+)<\/script>/
+            );
+            if (match) {
+              fileTypeMap[targetFilePath] = 'setup-ts';
+              const srcTs = match[1];
+              // importパスの.vueを取り除いてTSとしてimportされるようにする
+              const replacedSrc = srcTs.replace(/\.vue'/g, `'`);
+
+              const exposeMatch = replacedSrc.match(
+                /defineExpose\({([^}]+)}\)/
+              );
+              const exposeText = exposeMatch ? exposeMatch[1] : '';
+              return [
+                `import { defineComponent } from 'vue';`,
+                replacedSrc,
+                'export default defineComponent({',
+                '  setup() {',
+                `    return {${exposeText}}`,
+                '  }',
+                '});',
+              ].join('\n');
+            }
+          }
+
+          return content;
         })
       )
       // 変換できなかったものは取り除く

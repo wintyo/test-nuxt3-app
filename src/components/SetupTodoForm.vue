@@ -21,6 +21,11 @@ const onSubmit = (event: Event) => {
   formData.title = '';
   formData.detail = '';
 };
+
+defineExpose({
+  formData,
+  onSubmit,
+});
 </script>
 
 <template>
