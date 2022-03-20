@@ -8,6 +8,7 @@ export default defineNuxtConfig({
       compilerOptions: {
         experimentalDecorators: true,
         esModuleInterop: true,
+        types: ['jest'],
         // 書かなくてもPropの設定ができてる？
         // useDefineForClassFields: true,
       },

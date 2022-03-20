@@ -2,6 +2,7 @@
 import SetupTodoForm from '~/components/SetupTodoForm.vue';
 import SetupTodoItem from '~/components/SetupTodoItem.vue';
 
+import { reactive } from 'vue';
 import { Todo } from '~/types/Todo';
 
 type State = {
