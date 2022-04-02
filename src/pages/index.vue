@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from 'vue';
+import { defineComponent, reactive, ref, onMounted } from 'vue';
 import { Todo } from '~/types/Todo';
 import TodoForm from '~/components/TodoForm.vue';
 import TodoItem from '~/components/TodoItem.vue';
@@ -30,6 +30,11 @@ export default defineComponent({
     const state = reactive<State>({
       todoList: [],
     });
+
+    const refComponent = ref<InstanceType<typeof TodoForm>>();
+    if (refComponent) {
+      refComponent.value.cmpIsDisabled;
+    }
 
     return {
       state,

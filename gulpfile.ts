@@ -70,6 +70,8 @@ gulp.task('types', () => {
       // 拡張子を.vue → .tsに変える
       .pipe(
         rename((path) => {
+          // パス情報を保存する
+          targetFilePaths.push('~/' + path.dirname + '/' + path.basename);
           path.extname = '.ts';
         })
       )
