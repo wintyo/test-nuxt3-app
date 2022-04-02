@@ -7,6 +7,5 @@ describe('テスト', () => {
   it('テスト', () => {
     const wrapper = mount(TodoForm);
     console.log(wrapper.vm.onSubmit);
-    console.log('hoge');
   });
 });
